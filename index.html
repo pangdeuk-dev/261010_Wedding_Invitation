@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="description" content="모바일 청첩장" />
+  <meta property="og:title" content="Gwangdeuk & Seohee" />
+  <meta property="og:description" content="저희 결혼식에 초대합니다" />
+  <meta property="og:image" content="images/cover.jpg" />
+  <title>Gwangdeuk &amp; Seohee — Wedding</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Caveat:wght@400;500;600&family=Noto+Serif+KR:wght@300;400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="scroll-progress" id="scroll-progress"></div>
+
+  <button id="bgm-toggle" class="bgm-btn" aria-label="배경음악">
+    <svg class="icon-music" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+    <svg class="icon-muted hidden" viewBox="0 0 24 24" fill="currentColor"><path d="M3.63 3.63a.996.996 0 0 0 0 1.41L7.29 8.7 7 9H4a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h3l3.29 3.29c.63.63 1.71.18 1.71-.71v-4.17l4.18 4.18c-.49.37-1.02.68-1.6.91v2.06a8.94 8.94 0 0 0 3.23-1.46l1.66 1.66a.996.996 0 1 0 1.41-1.41L5.05 3.63a.996.996 0 0 0-1.42 0zM19 12c0 .82-.15 1.61-.41 2.34l1.53 1.53A8.96 8.96 0 0 0 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM12 4 9.91 6.09 12 8.18z"/></svg>
+  </button>
+
+  <nav class="dots" id="dots" aria-label="섹션 이동"></nav>
+
+  <main class="shell">
+
+    <!-- ========== COVER ========== -->
+    <header class="cover" id="ch-cover" data-chapter="Cover">
+      <div class="cover-photo">
+        <img id="cover-img" src="" alt="신랑 신부 사진" />
+      </div>
+      <div class="cover-inner">
+        <p class="cover-top" id="cover-kicker"></p>
+        <div class="cover-center">
+          <h1 class="cover-names">
+            <span id="cover-groom"></span><br />
+            <span class="amp">&amp;</span> <span id="cover-bride"></span>
+          </h1>
+          <p class="cover-tagline" id="cover-tagline"></p>
+          <div class="cover-meta">
+            <span id="cover-date"></span>
+            <span class="dot">·</span>
+            <span id="cover-venue"></span>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-cue"><span>SCROLL</span><i></i></div>
+    </header>
+
+    <!-- ========== INVITATION ========== -->
+    <section class="chapter chapter--full" data-chapter="Invitation">
+      <p class="kicker reveal" data-num="01">Invitation</p>
+      <h2 class="invite-head reveal" data-d="80">We are <em>getting married</em></h2>
+      <p class="greeting reveal" data-d="160" id="greeting"></p>
+      <div class="parents reveal" data-d="240">
+        <div class="row"><span class="lbl">신랑</span><span id="p-groom"></span><span>의 장남</span><strong id="p-groom-name"></strong></div>
+        <div class="row"><span class="lbl">신부</span><span id="p-bride"></span><span>의 장녀</span><strong id="p-bride-name"></strong></div>
+      </div>
+      <svg class="divider-sketch reveal" data-d="300" viewBox="0 0 64 40" aria-hidden="true">
+        <path class="sketch" d="M4 28 C 16 8, 24 8, 32 22 C 40 36, 48 36, 60 16"/>
+        <path class="sketch-fill" d="M32 14 c0 0 -2-3 -4-2 c-2 1 -1 4 4 7 c5-3 6-6 4-7 c-2-1 -4 2 -4 2 z"/>
+      </svg>
+    </section>
+
+    <!-- ========== SAVE THE DATE ========== -->
+    <section class="chapter chapter--full" data-chapter="Date">
+      <p class="kicker reveal" data-num="02">Save the date</p>
+      <p class="date-big display reveal" data-d="80" id="date-big"></p>
+      <p class="date-sub reveal" data-d="160" id="date-sub"></p>
+      <div class="dday reveal" data-d="220" id="dday">
+        <div class="dday-unit"><b id="dd-d">0</b><small>Days</small></div>
+        <div class="dday-unit"><b id="dd-h">0</b><small>Hours</small></div>
+        <div class="dday-unit"><b id="dd-m">0</b><small>Min</small></div>
+        <div class="dday-unit"><b id="dd-s">0</b><small>Sec</small></div>
+      </div>
+      <div class="calendar reveal" data-d="280">
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+    </section>
+
+    <!-- ========== GALLERY ========== -->
+    <section class="chapter gallery-section" data-chapter="Gallery">
+      <div class="chapter-head reveal">
+        <p class="kicker" data-num="03" style="margin-bottom:0">Gallery</p>
+      </div>
+      <div class="gallery-preview reveal" data-d="80" id="gallery-preview"></div>
+      <button class="gallery-more reveal" data-d="160" id="gallery-more">
+        View all <b id="gallery-count">23</b> photos
+      </button>
+    </section>
+
+    <!-- ========== LOCATION ========== -->
+    <section class="chapter" data-chapter="Location">
+      <p class="kicker reveal" data-num="04">Location</p>
+      <p class="place-name reveal" data-d="80" id="loc-venue"></p>
+      <p class="place-addr reveal" data-d="120" id="loc-addr"></p>
+      <p class="place-tel reveal" data-d="140" id="loc-tel"></p>
+
+      <div class="map-embed reveal" data-d="180" id="map-embed"></div>
+      <div class="map-btns reveal" data-d="220">
+        <a id="map-naver" href="#" target="_blank" rel="noopener">네이버</a>
+        <a id="map-kakao" href="#" target="_blank" rel="noopener">카카오맵</a>
+        <a id="map-tmap" href="#" target="_blank" rel="noopener">티맵</a>
+      </div>
+
+      <div class="tabs reveal" data-d="260">
+        <div class="tab-heads" id="tab-heads"></div>
+        <div class="tab-body" id="tab-body"></div>
+      </div>
+    </section>
+
+    <!-- ========== ACCOUNTS ========== -->
+    <section class="chapter" data-chapter="Gift">
+      <p class="kicker reveal" data-num="05">With heart</p>
+      <p class="account-desc reveal" data-d="80">참석이 어려우신 분들을 위해 마음 전하실 곳을 안내드립니다. 따뜻한 마음에 감사드립니다.</p>
+      <div class="acc-group reveal" data-d="140" id="acc-group"></div>
+    </section>
+
+    <!-- ========== RSVP ========== -->
+    <section class="chapter" data-chapter="RSVP">
+      <p class="kicker reveal" data-num="06">RSVP</p>
+      <p class="lead reveal" data-d="80">소중한 걸음 해주시는 분들을 위해 참석 여부를 알려주시면 준비에 큰 도움이 됩니다.</p>
+      <form class="form reveal" data-d="140" id="rsvp-form">
+        <div class="field"><label for="rsvp-name">성함</label><input type="text" id="rsvp-name" name="name" required placeholder="이름" /></div>
+        <div class="field"><label for="rsvp-phone">연락처</label><input type="tel" id="rsvp-phone" name="phone" placeholder="010-0000-0000" /></div>
+        <div class="field">
+          <label>참석 여부</label>
+          <div class="radio-row">
+            <label><input type="radio" name="attendance" value="yes" required /><span>참석</span></label>
+            <label><input type="radio" name="attendance" value="no" /><span>불참</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="rsvp-side">구분</label>
+          <select id="rsvp-side" name="side">
+            <option value="신랑측">신랑측 하객</option>
+            <option value="신부측">신부측 하객</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="rsvp-guests">동행 인원 (본인 포함)</label>
+          <select id="rsvp-guests" name="guests">
+            <option value="1">1명</option><option value="2">2명</option>
+            <option value="3">3명</option><option value="4">4명</option>
+            <option value="5">5명 이상</option>
+          </select>
+        </div>
+        <button type="submit" class="btn">참석 여부 전달</button>
+      </form>
+      <p class="form-ok hidden" id="rsvp-ok">감사합니다. 참석 여부가 전달되었습니다.</p>
+    </section>
+
+    <!-- ========== GUESTBOOK ========== -->
+    <section class="chapter" data-chapter="Guestbook">
+      <p class="kicker reveal" data-num="07">Guestbook</p>
+      <form class="form reveal" data-d="80" id="gb-form">
+        <div class="field"><label for="gb-name">이름</label><input type="text" id="gb-name" required maxlength="20" placeholder="이름" /></div>
+        <div class="field"><label for="gb-msg">메시지</label><textarea id="gb-msg" required rows="3" maxlength="500" placeholder="축하 메시지를 남겨주세요"></textarea></div>
+        <div class="field"><label for="gb-pw">비밀번호 <span class="opt">수정·삭제 시 필요 (선택)</span></label><input type="password" id="gb-pw" inputmode="numeric" maxlength="8" placeholder="예: 1234" autocomplete="off" /></div>
+        <button type="submit" class="btn">메시지 남기기</button>
+      </form>
+      <ul class="gb-list reveal" data-d="120" id="gb-list"></ul>
+      <button class="gb-more hidden" id="gb-more"></button>
+    </section>
+
+    <!-- ========== OUTRO ========== -->
+    <footer class="outro" data-chapter="Thanks">
+      <p class="outro-thanks reveal" id="outro-thanks"></p>
+      <svg class="outro-sketch reveal" data-d="80" viewBox="0 0 200 130" aria-hidden="true">
+        <!-- 손스케치: 신랑 신부 라인아트 -->
+        <path class="sketch" d="M58 120 C44 120 40 96 46 76 C50 62 58 56 70 56 C82 56 90 62 94 76 C100 96 92 120 78 120 Z"/>
+        <path class="sketch" d="M52 60 L46 44 L62 54 M88 60 L96 44 L80 54"/>
+        <path class="sketch-fill" d="M62 84 l-7 -4 0 12 7 -4 7 4 0 -12 z"/>
+        <path class="sketch" d="M142 120 C128 120 124 96 130 76 C134 62 142 56 154 56 C166 56 174 62 178 76 C184 96 176 120 162 120 Z"/>
+        <path class="sketch" d="M136 60 L130 44 L146 54 M172 60 L180 44 L164 54"/>
+        <path class="sketch" d="M154 46 C144 48 138 62 140 82 C142 100 148 114 154 120 C160 114 166 100 168 82 C170 62 164 48 154 46 Z" opacity="0.55"/>
+        <path class="sketch-fill" d="M100 40 c0 0 -3-5 -7-3 c-4 2 -2 7 7 13 c9-6 11-11 7-13 c-4-2 -7 3 -7 3 z"/>
+      </svg>
+      <p class="outro-names reveal" data-d="140"><span id="outro-groom"></span> &amp; <span id="outro-bride"></span></p>
+      <p class="outro-date reveal" data-d="180" id="outro-date"></p>
+    </footer>
+
+  </main>
+
+  <!-- ===== 갤러리 전체 뷰어 ===== -->
+  <div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="갤러리">
+    <div class="viewer-bar">
+      <span class="viewer-count"><b id="v-cur">1</b> <span id="v-total">/ 23</span></span>
+      <button class="viewer-close" id="v-close" aria-label="닫기">&times;</button>
+    </div>
+    <div class="viewer-stage">
+      <div class="viewer-track" id="v-track"></div>
+      <button class="viewer-nav prev" id="v-prev" aria-label="이전">&#8249;</button>
+      <button class="viewer-nav next" id="v-next" aria-label="다음">&#8250;</button>
+    </div>
+    <div class="viewer-thumbs" id="v-thumbs"></div>
+  </div>
+
+  <!-- ===== 공용 모달 (비밀번호 확인 / 삭제 확인) ===== -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <p class="modal-title" id="modal-title"></p>
+      <p class="modal-desc hidden" id="modal-desc"></p>
+      <input class="modal-input hidden" id="modal-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+      <div class="modal-acts">
+        <button class="modal-btn ghost" id="modal-cancel">취소</button>
+        <button class="modal-btn solid" id="modal-ok">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden" role="status"></div>
+
+  <audio id="bgm-audio" loop preload="auto"></audio>
+
+  <script src="config.js"></script>
+  <!-- Firebase (방명록·참석여부 공유 저장용 — config.firebase 설정 시 자동 활성) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
