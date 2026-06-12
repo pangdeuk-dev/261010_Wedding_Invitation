@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>RSVP 관리자</title>
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+  <style>
+    :root {
+      --bg: #f3f1ea; --paper: #fff; --ink: #15151a; --muted: #6a6a72;
+      --accent: #1f2ad6; --line: rgba(21,21,26,0.14); --ok: #1f8a4c; --no: #c0392b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Pretendard", -apple-system, sans-serif;
+      background: var(--bg); color: var(--ink); line-height: 1.6;
+      padding: 24px 16px 80px;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+    .sub { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+
+    /* 로그인 */
+    .gate { max-width: 320px; margin: 80px auto; text-align: center; }
+    .gate h1 { margin-bottom: 16px; }
+    .gate input {
+      width: 100%; padding: 14px; font-size: 16px; text-align: center;
+      border: 1px solid var(--line); border-radius: 6px; margin-bottom: 12px;
+      background: var(--paper);
+    }
+    .gate input:focus { outline: none; border-color: var(--accent); }
+    .gate button {
+      width: 100%; padding: 14px; font-size: 15px; border: none; border-radius: 6px;
+      background: var(--ink); color: #fff; cursor: pointer;
+    }
+    .gate .err { color: var(--no); font-size: 13px; margin-top: 10px; min-height: 18px; }
+
+    /* 통계 카드 */
+    .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+    @media (min-width: 560px) { .stats { grid-template-columns: repeat(4, 1fr); } }
+    .stat {
+      background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
+      padding: 16px 14px;
+    }
+    .stat .label { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+    .stat .num { font-size: 28px; font-weight: 700; margin-top: 4px; }
+    .stat .num small { font-size: 13px; font-weight: 400; color: var(--muted); }
+    .stat.accent .num { color: var(--accent); }
+
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+    .mini {
+      background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px;
+      font-size: 14px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .mini b { font-size: 18px; }
+
+    /* 도구 줄 */
+    .toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+    .toolbar .grow { flex: 1; }
+    .btn {
+      padding: 10px 16px; font-size: 13px; border: 1px solid var(--line); border-radius: 6px;
+      background: var(--paper); color: var(--ink); cursor: pointer;
+    }
+    .btn.solid { background: var(--accent); color: #fff; border-color: var(--accent); }
+    select.btn { -webkit-appearance: none; appearance: none; }
+
+    /* 표 */
+    .table-wrap { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; white-space: nowrap; }
+    th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+    th { font-size: 11px; color: var(--muted); letter-spacing: 0.05em; background: #faf9f5; position: sticky; top: 0; }
+    tr:last-child td { border-bottom: none; }
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: 11px; font-weight: 600; }
+    .tag.yes { background: rgba(31,138,76,0.12); color: var(--ok); }
+    .tag.no { background: rgba(192,57,43,0.12); color: var(--no); }
+    .empty { text-align: center; padding: 40px; color: var(--muted); }
+    .loading { text-align: center; padding: 40px; color: var(--muted); }
+    a.phone { color: var(--accent); text-decoration: none; }
+    .hidden { display: none !important; }
+    .note { font-size: 12px; color: var(--muted); margin-top: 16px; line-height: 1.7; }
+  </style>
+</head>
+<body>
+  <!-- 로그인 게이트 -->
+  <div class="gate" id="gate">
+    <h1>RSVP 관리자</h1>
+    <input type="password" id="gate-pw" placeholder="비밀번호" autocomplete="off" />
+    <button id="gate-btn">확인</button>
+    <p class="err" id="gate-err"></p>
+  </div>
+
+  <!-- 대시보드 -->
+  <div class="wrap hidden" id="dash">
+    <h1>참석 여부 응답</h1>
+    <p class="sub" id="updated"></p>
+
+    <div class="stats">
+      <div class="stat accent"><div class="label">총 응답</div><div class="num" id="s-total">0</div></div>
+      <div class="stat"><div class="label">참석</div><div class="num" id="s-yes" style="color:var(--ok)">0</div></div>
+      <div class="stat"><div class="label">불참</div><div class="num" id="s-no" style="color:var(--no)">0</div></div>
+      <div class="stat accent"><div class="label">총 참석 인원</div><div class="num" id="s-head">0<small>명</small></div></div>
+    </div>
+
+    <div class="row2">
+      <div class="mini">🤵 신랑측 <b id="s-groom">0</b></div>
+      <div class="mini">👰 신부측 <b id="s-bride">0</b></div>
+    </div>
+
+    <div class="toolbar">
+      <select class="btn" id="filter">
+        <option value="all">전체 보기</option>
+        <option value="yes">참석만</option>
+        <option value="no">불참만</option>
+      </select>
+      <div class="grow"></div>
+      <button class="btn solid" id="csv">엑셀(CSV) 다운로드</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>성함</th><th>구분</th><th>참석</th><th>인원</th><th>연락처</th><th>제출시각</th></tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="7" class="loading">불러오는 중…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="note" id="note"></p>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script>
+    // ===== 관리자 비밀번호 (원하는 값으로 바꾸세요) =====
+    const ADMIN_PASSWORD = "wedding1010";
+
+    const $ = (s) => document.querySelector(s);
+    let rows = [];
+
+    // ---- 로그인 ----
+    const SESSION_KEY = "rsvp_admin_ok";
+    function tryLogin(pw) {
+      if (pw === ADMIN_PASSWORD) {
+        sessionStorage.setItem(SESSION_KEY, "1");
+        showDash();
+        return true;
+      }
+      return false;
+    }
+    function showDash() {
+      $("#gate").classList.add("hidden");
+      $("#dash").classList.remove("hidden");
+      loadData();
+    }
+    $("#gate-btn").addEventListener("click", () => {
+      if (!tryLogin($("#gate-pw").value)) $("#gate-err").textContent = "비밀번호가 일치하지 않습니다.";
+    });
+    $("#gate-pw").addEventListener("keydown", (e) => { if (e.key === "Enter") $("#gate-btn").click(); });
+    if (sessionStorage.getItem(SESSION_KEY) === "1") showDash();
+
+    // ---- 데이터 로드 ----
+    function loadData() {
+      const fb = (window.WEDDING_CONFIG || {}).firebase;
+      if (!fb || !fb.projectId) {
+        $("#tbody").innerHTML = `<tr><td colspan="7" class="empty">Firebase 설정이 없습니다.<br>config.js의 firebase 항목을 확인하세요.</td></tr>`;
+        return;
+      }
+      try {
+        firebase.initializeApp(fb);
+      } catch (e) { /* 이미 초기화됨 */ }
+      const db = firebase.firestore();
+
+      db.collection("rsvp").orderBy("at", "desc").onSnapshot(
+        (snap) => {
+          rows = snap.docs.map((d) => d.data());
+          render();
+          const now = new Date().toLocaleString("ko-KR");
+          $("#updated").textContent = `실시간 동기화 중 · 마지막 갱신 ${now}`;
+        },
+        (err) => {
+          console.error(err);
+          $("#tbody").innerHTML = `<tr><td colspan="7" class="empty">
+            응답을 불러오지 못했습니다.<br>
+            Firestore 보안 규칙에서 <b>rsvp 읽기</b>가 허용되어야 합니다.<br>
+            (SETUP.md의 관리자 안내 참고)
+          </td></tr>`;
+        }
+      );
+    }
+
+    // ---- 렌더 ----
+    function render() {
+      const yes = rows.filter((r) => r.attendance === "yes");
+      const no = rows.filter((r) => r.attendance === "no");
+      const head = yes.reduce((sum, r) => sum + (parseInt(r.guests, 10) || 1), 0);
+      const groom = yes.filter((r) => r.side === "신랑측").reduce((s, r) => s + (parseInt(r.guests, 10) || 1), 0);
+      const bride = yes.filter((r) => r.side === "신부측").reduce((s, r) => s + (parseInt(r.guests, 10) || 1), 0);
+
+      $("#s-total").textContent = rows.length;
+      $("#s-yes").textContent = yes.length;
+      $("#s-no").textContent = no.length;
+      $("#s-head").innerHTML = head + "<small>명</small>";
+      $("#s-groom").textContent = groom + "명";
+      $("#s-bride").textContent = bride + "명";
+
+      const filter = $("#filter").value;
+      const list = filter === "all" ? rows : rows.filter((r) => r.attendance === filter);
+
+      if (!list.length) {
+        $("#tbody").innerHTML = `<tr><td colspan="7" class="empty">응답이 없습니다.</td></tr>`;
+        return;
+      }
+
+      $("#tbody").innerHTML = list.map((r, i) => {
+        const att = r.attendance === "yes"
+          ? `<span class="tag yes">참석</span>`
+          : `<span class="tag no">불참</span>`;
+        const when = r.at ? new Date(r.at).toLocaleString("ko-KR", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "-";
+        const phone = r.phone ? `<a class="phone" href="tel:${String(r.phone).replace(/[^0-9]/g, "")}">${esc(r.phone)}</a>` : "-";
+        return `<tr>
+          <td>${i + 1}</td>
+          <td>${esc(r.name)}</td>
+          <td>${esc(r.side || "-")}</td>
+          <td>${att}</td>
+          <td>${esc(r.guests || "-")}</td>
+          <td>${phone}</td>
+          <td>${when}</td>
+        </tr>`;
+      }).join("");
+    }
+
+    $("#filter").addEventListener("change", render);
+
+    function esc(s) {
+      const d = document.createElement("div");
+      d.textContent = s == null ? "" : String(s);
+      return d.innerHTML;
+    }
+
+    // ---- CSV 다운로드 ----
+    $("#csv").addEventListener("click", () => {
+      if (!rows.length) return;
+      const header = ["성함", "구분", "참석여부", "인원", "연락처", "제출시각"];
+      const lines = rows.map((r) => [
+        r.name || "",
+        r.side || "",
+        r.attendance === "yes" ? "참석" : "불참",
+        r.guests || "",
+        r.phone || "",
+        r.at ? new Date(r.at).toLocaleString("ko-KR") : "",
+      ].map(csvCell).join(","));
+      const csv = "\uFEFF" + [header.join(","), ...lines].join("\r\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `rsvp_${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+    function csvCell(v) {
+      v = String(v);
+      return /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
+    }
+
+    $("#note").textContent = "이 페이지는 검색엔진에 노출되지 않으며(noindex), 비밀번호로 보호됩니다. 정확한 보안을 위해 예식이 끝난 뒤에는 Firestore 규칙에서 rsvp 읽기를 다시 닫는 것을 권장합니다.";
+  </script>
+</body>
+</html>
