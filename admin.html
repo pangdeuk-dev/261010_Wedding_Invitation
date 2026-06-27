@@ -164,7 +164,7 @@
 
     // ---- 데이터 로드 ----
     function loadData() {
-      const fb = (window.WEDDING_CONFIG || {}).firebase;
+      const fb = (typeof WEDDING_CONFIG !== "undefined" ? WEDDING_CONFIG : {}).firebase;
       if (!fb || !fb.projectId) {
         $("#tbody").innerHTML = `<tr><td colspan="7" class="empty">Firebase 설정이 없습니다.<br>config.js의 firebase 항목을 확인하세요.</td></tr>`;
         return;
