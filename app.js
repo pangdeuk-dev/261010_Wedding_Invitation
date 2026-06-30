@@ -657,17 +657,48 @@
   function initBgm() {
     const bgm = cfg.bgm, audio = $("#bgm-audio"), btn = $("#bgm-toggle");
     if (!bgm || !bgm.src || !audio || !btn) { btn?.classList.add("hidden"); return; }
+
     audio.src = bgm.src;
+    audio.setAttribute("playsinline", "");
+    audio.setAttribute("webkit-playsinline", "");
+
     let playing = false;
+    let userPaused = false; // 사용자가 버튼으로 끈 경우 자동재생 안 함
+
     function ui() {
       btn.classList.toggle("playing", playing);
       btn.querySelector(".icon-music")?.classList.toggle("hidden", !playing);
       btn.querySelector(".icon-muted")?.classList.toggle("hidden", playing);
     }
-    btn.addEventListener("click", () => {
-      if (playing) { audio.pause(); }
-      else { audio.play().catch(() => toast("음악을 재생할 수 없습니다")); }
+
+    function tryPlay(isAuto) {
+      if (userPaused && isAuto) return Promise.resolve();
+      return audio.play().catch(() => {
+        if (!isAuto) toast("음악을 재생할 수 없습니다");
+      });
+    }
+
+    // 페이지 로드 시 자동 재생 시도 (PC·일부 환경에서 바로 재생됨)
+    tryPlay(true);
+
+    // 모바일: 자동재생이 막혀 있으면 첫 터치·스크롤·클릭 때 재생
+    function unlockAutoplay() {
+      if (!userPaused && audio.paused) tryPlay(true);
+    }
+    ["touchstart", "touchend", "click", "scroll"].forEach((ev) => {
+      document.addEventListener(ev, unlockAutoplay, { once: true, passive: true });
     });
+
+    btn.addEventListener("click", () => {
+      if (playing) {
+        userPaused = true;
+        audio.pause();
+      } else {
+        userPaused = false;
+        tryPlay(false);
+      }
+    });
+
     audio.addEventListener("play", () => { playing = true; ui(); });
     audio.addEventListener("pause", () => { playing = false; ui(); });
   }
