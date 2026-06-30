@@ -51,10 +51,9 @@ const WEDDING_CONFIG = {
   // ---- 사진 ----
   photos: {
     cover: "images/cover.jpg", // 커버(메인) 대형 사진
-    // 갤러리 — 사진 23장. images 폴더에 gallery-1.jpg ~ gallery-23.jpg 로 넣으세요.
-    // (확장자는 jpg·png·jpeg·webp 무엇이든 자동 인식됩니다)
-    // 직접 파일명을 지정하려면 아래 배열을 원하는 경로로 바꾸면 됩니다.
-    gallery: Array.from({ length: 23 }, (_, i) => `images/gallery-${i + 1}.jpg`),
+    // 갤러리 — 최대 30장 (gallery-1 ~ gallery-30). 현재 25장 사용 중.
+    // 사진 추가 시 length를 26~30으로 늘리고 파일을 images/ 에 넣으세요.
+    gallery: Array.from({ length: 25 }, (_, i) => `images/gallery-${i + 1}.jpg`),
   },
 
   // 블루 듀오톤(흑백+코발트 톤). false 면 원본 컬러
