@@ -413,34 +413,95 @@
   }
 
   // ---------- RSVP ----------
+  const RSVP_DONE_KEY = "wedding_rsvp_done";
+
+  function rsvpGoStep(step) {
+    const s1 = $("#rsvp-step-1"), s2 = $("#rsvp-step-2");
+    if (!s1 || !s2) return;
+    s1.classList.toggle("hidden", step !== 1);
+    s2.classList.toggle("hidden", step !== 2);
+    const sheet = $(".rsvp-sheet");
+    if (sheet) sheet.scrollTop = 0;
+  }
+  function openRsvpModal() {
+    const m = $("#rsvp-modal");
+    if (!m) return;
+    rsvpGoStep(1); // 열 때는 항상 첫 화면부터
+    m.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+  function closeRsvpModal() {
+    const m = $("#rsvp-modal");
+    if (!m) return;
+    m.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
   function initRsvp() {
     const form = $("#rsvp-form");
-    if (!form) return;
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const fd = new FormData(form);
-      const entry = {
-        name: fd.get("name"), phone: fd.get("phone"),
-        attendance: fd.get("attendance"), side: fd.get("side"),
-        guests: fd.get("guests"),
-        at: new Date().toISOString(),
-      };
-      try {
-        if (fbDb) {
-          await fbDb.collection("rsvp").add(entry);
-        } else {
-          const list = JSON.parse(localStorage.getItem("wedding_rsvp") || "[]");
-          list.push(entry);
-          localStorage.setItem("wedding_rsvp", JSON.stringify(list));
-        }
-        form.classList.add("hidden");
-        $("#rsvp-ok")?.classList.remove("hidden");
-        toast("참석 여부가 전달되었습니다");
-      } catch (err) {
-        console.warn(err);
-        toast("전송 중 오류가 발생했습니다");
-      }
+    const modal = $("#rsvp-modal");
+    if (!modal) return;
+
+    // 팝업 정보 채우기 (config 기준)
+    const d = weddingDate();
+    setText("#rsvp-info-people", `신랑 ${groom.name} & 신부 ${bride.name}`);
+    if (d) {
+      const dateStr = `${wd.date} ${KO_DAYS[d.getDay()]}요일${wd.time ? " " + wd.time : ""}`;
+      setText("#rsvp-info-date", dateStr);
+    }
+    setText("#rsvp-info-place", [wd.address, wd.venue].filter(Boolean).join(" "));
+
+    // 닫기 동작
+    $("#rsvp-modal-close")?.addEventListener("click", closeRsvpModal);
+    modal.addEventListener("click", (e) => { if (e.target === modal) closeRsvpModal(); });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.classList.contains("open")) closeRsvpModal();
     });
+
+    // 단계 전환
+    $("#rsvp-next")?.addEventListener("click", () => rsvpGoStep(2));
+    $("#rsvp-back")?.addEventListener("click", () => rsvpGoStep(1));
+
+    // 접속 시 자동 표시 (이미 제출했으면 생략)
+    if (localStorage.getItem(RSVP_DONE_KEY) !== "1") {
+      setTimeout(openRsvpModal, 700);
+    }
+
+    if (form) {
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (!$("#rsvp-consent")?.checked) {
+          toast("개인정보 수집·이용에 동의해 주세요");
+          return;
+        }
+        const fd = new FormData(form);
+        const entry = {
+          name: fd.get("name"),
+          attendance: fd.get("attendance"),
+          side: fd.get("side"),
+          consent: true,
+          consentAt: new Date().toISOString(),
+          at: new Date().toISOString(),
+        };
+        try {
+          if (fbDb) {
+            await fbDb.collection("rsvp").add(entry);
+          } else {
+            const list = JSON.parse(localStorage.getItem("wedding_rsvp") || "[]");
+            list.push(entry);
+            localStorage.setItem("wedding_rsvp", JSON.stringify(list));
+          }
+          localStorage.setItem(RSVP_DONE_KEY, "1");
+          form.classList.add("hidden");
+          $("#rsvp-ok")?.classList.remove("hidden");
+          toast("참석 여부가 전달되었습니다");
+          setTimeout(closeRsvpModal, 1600);
+        } catch (err) {
+          console.warn(err);
+          toast("전송 중 오류가 발생했습니다");
+        }
+      });
+    }
   }
 
   // ---------- GUESTBOOK ----------

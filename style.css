@@ -1147,6 +1147,182 @@ body.duotone .cover-photo img { filter: grayscale(1) contrast(1.03); }
 .modal-btn.solid:active { background: var(--accent); }
 
 /* ===================================================
+   참석의사 전달 팝업 (바텀시트, 2단계, 큰 글씨)
+   =================================================== */
+.rsvp-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  background: rgba(15, 15, 20, 0.45);
+  display: flex;
+  align-items: flex-end;      /* 하단 정렬 = 바텀시트 */
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s var(--ease);
+}
+.rsvp-modal.open { opacity: 1; pointer-events: auto; }
+
+.rsvp-sheet {
+  width: 100%;
+  max-width: var(--max);
+  height: 58svh;              /* 화면 아래쪽 절반 정도 */
+  min-height: 380px;
+  background: var(--paper);
+  border-radius: 22px 22px 0 0;
+  padding: 22px 26px calc(28px + env(safe-area-inset-bottom));
+  position: relative;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.18);
+  transform: translateY(100%); /* 아래에서 위로 슬라이드 */
+  transition: transform 0.42s var(--ease);
+}
+.rsvp-modal.open .rsvp-sheet { transform: translateY(0); }
+
+.rsvp-grip {
+  display: block;
+  width: 44px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--line);
+  margin: 0 auto 14px;
+}
+
+.rsvp-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 44px;
+  height: 44px;
+  font-size: 30px;
+  line-height: 1;
+  color: var(--ink-soft);
+}
+
+.rsvp-step { animation: rsvpFade 0.35s var(--ease); }
+@keyframes rsvpFade {
+  from { opacity: 0; transform: translateX(8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.rsvp-modal-kicker {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-align: center;
+}
+.rsvp-modal-title {
+  font-family: var(--serif);
+  font-size: 27px;
+  font-weight: 500;
+  text-align: center;
+  margin: 8px 0 16px;
+}
+.rsvp-modal-desc {
+  font-size: 16px;
+  line-height: 1.75;
+  color: #3a3a42;
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.rsvp-modal-info {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 18px 0;
+  margin-bottom: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.rsvp-modal-info > div {
+  display: flex;
+  gap: 14px;
+  font-size: 16px;
+  line-height: 1.55;
+}
+.rsvp-modal-info dt {
+  flex: 0 0 56px;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding-top: 1px;
+}
+.rsvp-modal-info dd { flex: 1; color: var(--ink); font-weight: 400; }
+
+/* 이전 버튼 */
+.rsvp-back {
+  font-size: 15px;
+  color: var(--ink-soft);
+  padding: 4px 2px;
+  margin-bottom: 4px;
+}
+
+/* 큰 글씨 폼 (팝업 전용 오버라이드) */
+.rsvp-sheet .field { margin-bottom: 4px; }
+.rsvp-sheet .field label {
+  font-size: 15px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink);
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.rsvp-sheet .field input[type="text"],
+.rsvp-sheet .field select {
+  font-size: 17px;
+  padding: 15px 4px;
+}
+.rsvp-sheet .radio-row label {
+  padding: 17px;
+  font-size: 17px;
+}
+.rsvp-sheet .radio-row input {
+  width: 20px;
+  height: 20px;
+}
+.rsvp-sheet .btn {
+  padding: 19px;
+  font-size: 16px;
+  letter-spacing: 0.12em;
+}
+
+/* 동의 체크박스 */
+.rsvp-consent {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--paper-2);
+  padding: 15px 16px;
+  border-radius: 8px;
+  margin-top: 4px;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+.rsvp-consent input {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.rsvp-consent b { color: var(--accent); font-weight: 700; }
+.rsvp-consent small {
+  display: block;
+  margin-top: 5px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+/* ===================================================
    OUTRO / 푸터
    =================================================== */
 .outro {

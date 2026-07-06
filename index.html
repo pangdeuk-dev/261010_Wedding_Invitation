@@ -121,43 +121,9 @@
       <div class="acc-group reveal" data-d="140" id="acc-group"></div>
     </section>
 
-    <!-- ========== RSVP ========== -->
-    <section class="chapter" data-chapter="RSVP">
-      <p class="kicker reveal" data-num="06">RSVP</p>
-      <p class="lead reveal" data-d="80">소중한 걸음 해주시는 분들을 위해 참석 여부를 알려주시면 준비에 큰 도움이 됩니다.</p>
-      <form class="form reveal" data-d="140" id="rsvp-form">
-        <div class="field"><label for="rsvp-name">성함</label><input type="text" id="rsvp-name" name="name" required placeholder="이름" /></div>
-        <div class="field"><label for="rsvp-phone">연락처</label><input type="tel" id="rsvp-phone" name="phone" placeholder="010-0000-0000" /></div>
-        <div class="field">
-          <label>참석 여부</label>
-          <div class="radio-row">
-            <label><input type="radio" name="attendance" value="yes" required /><span>참석</span></label>
-            <label><input type="radio" name="attendance" value="no" /><span>불참</span></label>
-          </div>
-        </div>
-        <div class="field">
-          <label for="rsvp-side">구분</label>
-          <select id="rsvp-side" name="side">
-            <option value="신랑측">신랑측 하객</option>
-            <option value="신부측">신부측 하객</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="rsvp-guests">동행 인원 (본인 포함)</label>
-          <select id="rsvp-guests" name="guests">
-            <option value="1">1명</option><option value="2">2명</option>
-            <option value="3">3명</option><option value="4">4명</option>
-            <option value="5">5명 이상</option>
-          </select>
-        </div>
-        <button type="submit" class="btn">참석 여부 전달</button>
-      </form>
-      <p class="form-ok hidden" id="rsvp-ok">감사합니다. 참석 여부가 전달되었습니다.</p>
-    </section>
-
     <!-- ========== GUESTBOOK ========== -->
     <section class="chapter" data-chapter="Guestbook">
-      <p class="kicker reveal" data-num="07">Guestbook</p>
+      <p class="kicker reveal" data-num="06">Guestbook</p>
       <form class="form reveal" data-d="80" id="gb-form">
         <div class="field"><label for="gb-name">이름</label><input type="text" id="gb-name" required maxlength="20" placeholder="이름" /></div>
         <div class="field"><label for="gb-msg">메시지</label><textarea id="gb-msg" required rows="3" maxlength="500" placeholder="축하 메시지를 남겨주세요"></textarea></div>
@@ -199,6 +165,60 @@
       <button class="viewer-nav next" id="v-next" aria-label="다음">&#8250;</button>
     </div>
     <div class="viewer-thumbs" id="v-thumbs"></div>
+  </div>
+
+  <!-- ===== 참석의사 전달 팝업 (바텀시트, 2단계) ===== -->
+  <div class="rsvp-modal" id="rsvp-modal" role="dialog" aria-modal="true" aria-labelledby="rsvp-modal-title">
+    <div class="rsvp-sheet">
+      <span class="rsvp-grip" aria-hidden="true"></span>
+      <button class="rsvp-modal-close" id="rsvp-modal-close" aria-label="닫기">&times;</button>
+
+      <!-- STEP 1 : 예식 정보 + 버튼 -->
+      <div class="rsvp-step" id="rsvp-step-1">
+        <p class="rsvp-modal-kicker">RSVP</p>
+        <h2 class="rsvp-modal-title" id="rsvp-modal-title">참석의사 전달</h2>
+        <p class="rsvp-modal-desc">소중한 분들을 정중히 모시고자 하오니,<br />참석 여부를 회신해 주시면 감사하겠습니다.</p>
+
+        <dl class="rsvp-modal-info">
+          <div><dt>주인공</dt><dd id="rsvp-info-people"></dd></div>
+          <div><dt>예식일</dt><dd id="rsvp-info-date"></dd></div>
+          <div><dt>위치</dt><dd id="rsvp-info-place"></dd></div>
+        </dl>
+
+        <button type="button" class="btn" id="rsvp-next">참석의사 전달하기</button>
+      </div>
+
+      <!-- STEP 2 : 입력 폼 -->
+      <div class="rsvp-step hidden" id="rsvp-step-2">
+        <button type="button" class="rsvp-back" id="rsvp-back">‹ 이전</button>
+        <h2 class="rsvp-modal-title">참석 정보 입력</h2>
+
+        <form class="form" id="rsvp-form">
+          <div class="field"><label for="rsvp-name">성함</label><input type="text" id="rsvp-name" name="name" required placeholder="이름을 입력해 주세요" /></div>
+          <div class="field">
+            <label>참석 여부</label>
+            <div class="radio-row">
+              <label><input type="radio" name="attendance" value="yes" required /><span>참석</span></label>
+              <label><input type="radio" name="attendance" value="no" /><span>불참</span></label>
+            </div>
+          </div>
+          <div class="field">
+            <label for="rsvp-side">구분</label>
+            <select id="rsvp-side" name="side">
+              <option value="신랑측">신랑측 하객</option>
+              <option value="신부측">신부측 하객</option>
+            </select>
+          </div>
+          <label class="rsvp-consent">
+            <input type="checkbox" id="rsvp-consent" name="consent" required />
+            <span><b>[필수]</b> 개인정보 수집·이용 동의<br />
+            <small>수집한 정보(성함·참석여부·구분)는 예식 준비 목적으로만 사용되며 예식 후 파기됩니다.</small></span>
+          </label>
+          <button type="submit" class="btn">참석 여부 전달하기</button>
+        </form>
+        <p class="form-ok hidden" id="rsvp-ok">감사합니다.<br />참석 여부가 전달되었습니다.</p>
+      </div>
+    </div>
   </div>
 
   <!-- ===== 공용 모달 (비밀번호 확인 / 삭제 확인) ===== -->
