@@ -1340,7 +1340,12 @@ body.duotone .cover-photo img { filter: grayscale(1) contrast(1.03); }
   margin-bottom: 30px;
 }
 
-.outro-sketch { width: 130px; margin: 0 auto 26px; display: block; }
+.outro-couple {
+  width: min(280px, 80vw);
+  height: auto;
+  margin: 0 auto 26px;
+  display: block;
+}
 
 .outro-names {
   font-family: var(--script);
