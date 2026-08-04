@@ -38,13 +38,13 @@ const WEDDING_CONFIG = {
   // 영문 축하 문구 (커버)
   tagline: "Two souls, one beautiful beginning.",
   // 인사말
-  greeting: `서로 다른 길을 걸어온 두 사람이
-이제 같은 곳을 바라보며
-한 길을 함께 걷고자 합니다.
+  greeting: `7년간 같은 곳을 바라보며
+천천히 함께 걸어온 두 사람이
+이제 하나의 여행을 시작합니다.
 
-귀한 걸음 하시어
-저희의 새로운 시작을
-축복해 주시면 감사하겠습니다.`,
+연휴의 소중한 시간 속에서도
+함께 축복해주신다면 
+그마음 오래 간직하며 행복하게 살아가겠습니다.`,
   // 마무리(아웃트로) 문구
   thanksMessage: "Thank you for being\npart of our story.",
 
