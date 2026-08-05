@@ -84,12 +84,12 @@ const WEDDING_CONFIG = {
   // ---- 마음 전하실 곳 (축의금 계좌) ----
   // side: 신랑측 / 신부측, role: 신랑·신부·아버지·어머니
   accounts: [
-    { side: "신랑측", role: "신랑", bank: "농협은행", number: "352-0548-1788-63", holder: "도광득" },
     { side: "신랑측", role: "아버지", bank: "새마을금고", number: "9002-1822-0756-1", holder: "도기보" },
     { side: "신랑측", role: "어머니", bank: "신한은행", number: "110-063-872155", holder: "정경희" },
-    { side: "신부측", role: "신부", bank: "우리은행", number: "1002-347-283933", holder: "김서희" },
+    { side: "신랑측", role: "신랑", bank: "농협은행", number: "352-0548-1788-63", holder: "도광득" },
     { side: "신부측", role: "아버지", bank: "국민은행", number: "112-240-2542-00", holder: "김정인" },
     { side: "신부측", role: "어머니", bank: "새마을금고", number: "1515-0900-4559-7", holder: "김양선" },
+    { side: "신부측", role: "신부", bank: "우리은행", number: "1002-347-283933", holder: "김서희" },
   ],
 
   // ---- 방명록 (Firebase 미설정 시 브라우저 로컬 저장) ----
