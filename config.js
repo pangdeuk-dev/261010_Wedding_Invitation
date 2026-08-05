@@ -83,7 +83,6 @@ const WEDDING_CONFIG = {
 
   // ---- 마음 전하실 곳 (축의금 계좌) ----
   // side: 신랑측 / 신부측, role: 신랑·신부·아버지·어머니
-  // bank·number 가 비어 있으면 화면에 표시되지 않습니다.
   accounts: [
     { side: "신랑측", role: "신랑", bank: "농협은행", number: "352-0548-1788-63", holder: "도광득" },
     { side: "신랑측", role: "아버지", bank: "새마을금고", number: "9002-1822-0756-1", holder: "도기보" },
