@@ -408,10 +408,10 @@
       bySide[side].push(a);
     });
 
-    order.forEach((side, idx) => {
+    order.forEach((side) => {
       const panel = document.createElement("details");
       panel.className = "acc-panel";
-      if (idx === 0) panel.open = true;
+      panel.open = true;
 
       const summary = document.createElement("summary");
       summary.className = "acc-panel-summary";
