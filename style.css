@@ -864,7 +864,60 @@ body.duotone .cover-photo img { filter: grayscale(1) contrast(1.03); }
   margin-bottom: 24px;
 }
 
-.acc-group { display: flex; flex-direction: column; gap: 10px; }
+.acc-group { display: flex; flex-direction: column; gap: 12px; }
+
+.acc-panel {
+  background: var(--paper-2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.acc-panel-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  user-select: none;
+}
+
+.acc-panel-summary::-webkit-details-marker { display: none; }
+
+.acc-panel-summary::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-right: 1.5px solid var(--ink-soft);
+  border-bottom: 1.5px solid var(--ink-soft);
+  transform: rotate(45deg);
+  transition: transform 0.25s var(--ease);
+  flex-shrink: 0;
+}
+
+.acc-panel[open] > .acc-panel-summary::after {
+  transform: rotate(-135deg);
+  margin-top: 4px;
+}
+
+.acc-panel-count {
+  margin-left: auto;
+  margin-right: 10px;
+  font-size: 11px;
+  color: var(--ink-soft);
+  letter-spacing: 0.04em;
+}
+
+.acc-panel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
 
 .acc-item {
   display: flex;
@@ -872,12 +925,16 @@ body.duotone .cover-photo img { filter: grayscale(1) contrast(1.03); }
   justify-content: space-between;
   gap: 12px;
   padding: 16px 18px;
-  background: var(--paper-2);
-  border-radius: 2px;
+  background: transparent;
+  border-radius: 0;
+}
+
+.acc-item + .acc-item {
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .acc-info { min-width: 0; }
-.acc-side { font-size: 10px; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; }
+.acc-side { font-size: 10px; letter-spacing: 0.12em; color: var(--accent); }
 .acc-num { font-size: 15px; margin-top: 4px; word-break: break-all; }
 .acc-bank { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
 
@@ -889,6 +946,7 @@ body.duotone .cover-photo img { filter: grayscale(1) contrast(1.03); }
   border: 1px solid var(--ink);
   border-radius: 2px;
   transition: all 0.3s var(--ease);
+  background: transparent;
 }
 
 .acc-copy:active { background: var(--ink); color: var(--paper); }

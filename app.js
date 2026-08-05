@@ -393,22 +393,51 @@
   function renderAccounts() {
     const wrap = $("#acc-group");
     if (!wrap) return;
-    const accounts = cfg.accounts || [];
+    const accounts = (cfg.accounts || []).filter((a) => a && a.number);
     wrap.innerHTML = "";
+    if (!accounts.length) return;
+
+    const order = [];
+    const bySide = {};
     accounts.forEach((a) => {
-      const item = document.createElement("div");
-      item.className = "acc-item";
-      item.innerHTML = `
-        <div class="acc-info">
-          <div class="acc-side">${escapeHtml(a.side || "")}</div>
-          <div class="acc-num">${escapeHtml(a.number || "")}</div>
-          <div class="acc-bank">${escapeHtml(a.bank || "")} · ${escapeHtml(a.holder || "")}</div>
-        </div>
-        <button class="acc-copy" type="button">COPY</button>`;
-      item.querySelector(".acc-copy").addEventListener("click", () => {
-        copy(a.number || "").then(() => toast("계좌번호가 복사되었습니다"));
+      const side = a.side || "";
+      if (!bySide[side]) {
+        bySide[side] = [];
+        order.push(side);
+      }
+      bySide[side].push(a);
+    });
+
+    order.forEach((side, idx) => {
+      const panel = document.createElement("details");
+      panel.className = "acc-panel";
+      if (idx === 0) panel.open = true;
+
+      const summary = document.createElement("summary");
+      summary.className = "acc-panel-summary";
+      summary.innerHTML = `<span>${escapeHtml(side)}</span><span class="acc-panel-count">${bySide[side].length}</span>`;
+      panel.appendChild(summary);
+
+      const list = document.createElement("div");
+      list.className = "acc-panel-list";
+      bySide[side].forEach((a) => {
+        const label = [a.role, a.holder].filter(Boolean).join(" · ") || a.holder || "";
+        const item = document.createElement("div");
+        item.className = "acc-item";
+        item.innerHTML = `
+          <div class="acc-info">
+            <div class="acc-side">${escapeHtml(label)}</div>
+            <div class="acc-num">${escapeHtml(a.number || "")}</div>
+            <div class="acc-bank">${escapeHtml(a.bank || "")}</div>
+          </div>
+          <button class="acc-copy" type="button">COPY</button>`;
+        item.querySelector(".acc-copy").addEventListener("click", () => {
+          copy(a.number || "").then(() => toast("계좌번호가 복사되었습니다"));
+        });
+        list.appendChild(item);
       });
-      wrap.appendChild(item);
+      panel.appendChild(list);
+      wrap.appendChild(panel);
     });
   }
 
