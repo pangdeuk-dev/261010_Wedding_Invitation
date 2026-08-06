@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>캐치레일 · 실시간 취소표</title>
+    <meta
+      name="description"
+      content="주말 기차 취소표를 실시간으로 감시하고, 빈자리가 나는 순간 잡아주는 CatchRail"
+    />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="rail-bg" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="캐치레일 홈">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-text">CatchRail</span>
+      </a>
+      <nav class="topnav">
+        <a href="#watch">감시 등록</a>
+        <a href="#board">대시보드</a>
+      </nav>
+      <div class="conn" id="connStatus" data-state="connecting">
+        <span class="conn-dot"></span>
+        <span class="conn-label">연결 중</span>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-veil"></div>
+        <div class="hero-copy">
+          <p class="brand-hero">CatchRail</p>
+          <h1>취소표가 열리는<br />그 순간을 잡습니다</h1>
+          <p class="lede">
+            주말 KTX·SRT는 며칠 전에 이미 매진. 캐치레일이 빈자리를 감시하고, 나오면 바로 알려드립니다.
+          </p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="#watch">감시 시작하기</a>
+            <a class="btn btn-ghost" href="#board">내 감시 보기</a>
+          </div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="train-silhouette">
+            <div class="car"></div>
+            <div class="car"></div>
+            <div class="car glow"></div>
+            <div class="car"></div>
+          </div>
+          <div class="track"></div>
+          <div class="pulse-ring"></div>
+        </div>
+      </section>
+
+      <section class="notice" role="note">
+        <p>
+          데모 환경입니다. 좌석·예매는 모의 데이터이며, 실제 발권은 코레일·SRT 공식 사이트에서 진행하세요.
+        </p>
+      </section>
+
+      <section class="panel" id="watch">
+        <header class="section-head">
+          <h2>감시 등록</h2>
+          <p>노선과 날짜를 넣으면 서버가 수초마다 잔여석을 확인합니다.</p>
+        </header>
+
+        <form id="watchForm" class="watch-form">
+          <div class="field-grid">
+            <label>
+              <span>출발</span>
+              <select name="from" id="fromSelect" required></select>
+            </label>
+            <button type="button" class="swap" id="swapStations" title="출발·도착 바꾸기" aria-label="출발 도착 바꾸기">
+              ⇄
+            </button>
+            <label>
+              <span>도착</span>
+              <select name="to" id="toSelect" required></select>
+            </label>
+            <label>
+              <span>날짜</span>
+              <input type="date" name="date" id="dateInput" required />
+            </label>
+            <label>
+              <span>열차</span>
+              <select name="trainType" id="typeSelect"></select>
+            </label>
+            <label>
+              <span>인원</span>
+              <select name="passengers" id="passengers">
+                <option value="1">1명</option>
+                <option value="2">2명</option>
+                <option value="3">3명</option>
+                <option value="4">4명</option>
+              </select>
+            </label>
+            <label>
+              <span>선호 출발 (부터)</span>
+              <input type="time" name="preferDepartFrom" value="07:00" />
+            </label>
+            <label>
+              <span>선호 출발 (까지)</span>
+              <input type="time" name="preferDepartTo" value="21:00" />
+            </label>
+            <label>
+              <span>예매자 이름</span>
+              <input type="text" name="passengerName" maxlength="20" placeholder="홍길동" required />
+            </label>
+          </div>
+
+          <label class="check">
+            <input type="checkbox" name="autoBook" checked />
+            <span>취소표 포착 시 자동으로 시뮬레이션 예매</span>
+          </label>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">감시 시작</button>
+            <button type="button" class="btn btn-ghost" id="previewTrains">시간표 미리보기</button>
+          </div>
+        </form>
+
+        <div id="previewBox" class="preview" hidden>
+          <h3>시간표 미리보기</h3>
+          <ul id="previewList"></ul>
+        </div>
+      </section>
+
+      <section class="panel board" id="board">
+        <header class="section-head">
+          <h2>실시간 대시보드</h2>
+          <p>감시 중 · 포착 · 예매 완료 상태를 한곳에서 확인합니다.</p>
+        </header>
+        <div id="jobList" class="job-list">
+          <p class="empty">아직 등록된 감시가 없습니다. 위에서 노선을 추가해 보세요.</p>
+        </div>
+      </section>
+    </main>
+
+    <div id="toastStack" class="toasts" aria-live="polite"></div>
+
+    <dialog id="bookDialog">
+      <form method="dialog" class="dialog-body">
+        <h3>예매 완료 (시뮬레이션)</h3>
+        <div id="bookDetail"></div>
+        <button class="btn btn-primary" value="ok">확인</button>
+      </form>
+    </dialog>
+
+    <footer class="site-foot">
+      <p>CatchRail · 취소표 감시 데모</p>
+    </footer>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
