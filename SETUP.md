@@ -1,5 +1,11 @@
 # 모바일 청첩장 설정 가이드
 
+> 2026년 10월 10일 예식이 끝나 공개 페이지를 닫았습니다.
+> `index.html`은 종료 안내만 보여주고, `admin.html`은 응답 목록을 열지 않습니다.
+> `config.js`에서 연락처, 계좌번호, Firebase 연결 정보를 뺐습니다.
+> GitHub Pages는 이 변경이 `main`에 반영된 뒤에 닫힌 화면으로 바뀝니다.
+> 아래 1~6번은 예식 전에 쓰던 설정 기록입니다. 데이터베이스를 닫는 절차는 7번입니다.
+
 ## 1. 내용 수정
 
 `config.js` 파일만 열어서 아래 항목을 실제 정보로 바꿔 주세요.
@@ -73,74 +79,25 @@ python -m http.server 8080
 
 에 **최종 URL**을 넣어 PNG/SVG로 저장 후 종이 청첩장에 인쇄하세요.
 
-## 7. 방명록 · 참석여부 공유 저장 (Firebase — 무료)
+## 7. 데이터베이스 닫기 (Firebase 콘솔에서 직접)
 
-`config.js`의 `firebase` 항목이 **비어 있으면** 방명록·참석여부는 방문자 각자의 브라우저(localStorage)에만 저장됩니다(= 서로 공유 안 됨). 모든 하객이 함께 보는 방명록과 신랑·신부가 응답을 모으려면 아래처럼 **Firebase**를 연결하세요. (무료 범위로 충분)
+저장소 수정만으로는 Firestore가 닫히지 않습니다. 프로젝트 `wedding-invitation-3b2e8`의 보안 규칙이 아직 열려 있으면, 예전 페이지 주소와 저장소 기록만으로도 `rsvp`(참석 응답)와 `guestbook`(방명록)을 읽고 쓸 수 있습니다. 청첩장 동의 문구대로 예식 후 응답을 없애려면 아래 순서대로 진행하세요.
 
-### 7-1. 프로젝트 만들기
-
-1. [console.firebase.google.com](https://console.firebase.google.com) 접속 → **프로젝트 만들기**
-2. 이름 입력(예: `our-wedding`) → 애널리틱스는 꺼도 됨 → 생성
-
-### 7-2. 웹 앱 등록 & 설정값 복사
-
-1. 프로젝트 개요 화면에서 **웹 아이콘 `</>`** 클릭
-2. 앱 닉네임 입력 → 등록
-3. 나오는 `firebaseConfig` 값을 복사해서 `config.js`의 `firebase`에 붙여넣기:
-
-```js
-firebase: {
-  apiKey: "AIza...",
-  authDomain: "our-wedding.firebaseapp.com",
-  projectId: "our-wedding",
-  storageBucket: "our-wedding.appspot.com",
-  messagingSenderId: "1234567890",
-  appId: "1:1234567890:web:abcdef",
-},
-```
-
-### 7-3. Firestore 데이터베이스 만들기
-
-1. 왼쪽 메뉴 **빌드 → Firestore Database** → **데이터베이스 만들기**
-2. 위치는 `asia-northeast3 (서울)` 권장 → **프로덕션 모드**로 시작
-
-### 7-4. 보안 규칙 설정 (중요)
-
-Firestore의 **규칙(Rules)** 탭에서 아래로 교체 후 게시:
+1. [Firestore 규칙](https://console.firebase.google.com/project/wedding-invitation-3b2e8/firestore/rules)을 열고 아래 내용으로 바꾼 뒤 **게시**합니다. 이 단계가 외부 읽기·쓰기를 즉시 막습니다.
 
 ```
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // 방명록: 누구나 읽기/쓰기 (예식 전후 한정 운영 권장)
-    match /guestbook/{doc} {
-      allow read, create, update, delete: if true;
-    }
-    // 참석여부: 작성만 허용, 열람은 콘솔에서만
-    match /rsvp/{doc} {
-      allow create: if true;
-      allow read, update, delete: if false;
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
 ```
 
-> 위 규칙은 누구나 쓸 수 있는 **공개** 설정입니다. 결혼식 시즌에만 열어두고, 끝난 뒤에는 `if false`로 닫는 것을 권장합니다.
-
-### 7-5. 확인
-
-- `config.js`를 저장하고 페이지를 새로고침하면, 방명록이 **실시간으로 모든 기기에서 공유**됩니다.
-- 참석여부 응답은 Firebase 콘솔 **Firestore → `rsvp` 컬렉션**에서 확인하세요.
-- 설정을 비워두면 코드가 자동으로 **로컬 저장 모드**로 동작합니다(데모용).
-
-### (참고) 로컬 저장 모드에서 내 데이터 확인
-
-```javascript
-JSON.parse(localStorage.getItem('wedding_rsvp'))   // 참석여부
-JSON.parse(localStorage.getItem('wedding_gb'))     // 방명록
-```
-
-(같은 브라우저에서 작성한 것만 보입니다.)
+2. 규칙을 게시한 뒤, 응답을 더 보관하지 않는다면 [프로젝트 설정](https://console.firebase.google.com/project/wedding-invitation-3b2e8/settings/general) 맨 아래에서 프로젝트 `wedding-invitation-3b2e8`를 삭제합니다.
+3. 삭제 전에 응답 사본이 필요하면, 규칙을 닫기 전 Firebase 콘솔의 Firestore 화면에서 `rsvp` 컬렉션만 내려받으세요. 그 파일에는 하객 이름과 연락처가 있으니 청첩장 저장소나 메신저에 올리지 마세요.
 
 ## 8. 카카오맵 좌표 찾기
 
