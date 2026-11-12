@@ -5,6 +5,7 @@
   "use strict";
 
   const cfg = typeof WEDDING_CONFIG !== "undefined" ? WEDDING_CONFIG : {};
+  if (cfg.closed) return;
   const groom = cfg.groom || {};
   const bride = cfg.bride || {};
   const wd = cfg.wedding || {};
